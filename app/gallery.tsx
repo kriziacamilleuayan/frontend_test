@@ -9,7 +9,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa6";
 
-import Controls from "./controls";
+import Controls, { directionOptions, fieldOptions } from "./controls";
 import Modal from "./modal";
 
 import { User } from "./types/user";
@@ -17,10 +17,13 @@ import { User } from "./types/user";
 export type GalleryProps = {
   users: User[];
 };
+
 const Gallery = ({ users }: GalleryProps) => {
   const [usersList, setUsersList] = useState(users);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sort, setSort] = useState<String | null>(null);
+  const [sortDir, setSortDir] = useState<String | null>(null);
 
   const handleModalOpen = (id: number) => {
     const user = usersList.find((item) => item.id === id) || null;
@@ -36,11 +39,45 @@ const Gallery = ({ users }: GalleryProps) => {
     setIsModalOpen(false);
   };
 
+  const sortingDirection = (data: User[], x: any, isAsc= true) =>
+    data.sort((a, b) => {
+      const c = x === 'company' ? a.company.name > b.company.name : a[x] > b[x];
+      const asc = c ? 1 : -1;
+      const desc =  c ? -1 : 1;
+      return isAsc ? asc : desc;
+    }
+  );
+
+  const handleSort = (value: string, name: string) => {
+    let sortVar = sort || fieldOptions[0].value;
+    let sortDirVar = sortDir || directionOptions[0].value;
+
+    if(!sort || !sortDir) {
+      setSort(sortVar);
+      setSortDir(sortDirVar);
+    }
+
+    if(name === 'sort-field') {
+      setSort(value);
+      sortVar = value;
+    } else {
+      setSortDir(value);
+      sortDirVar = value;
+    };
+
+    const newSortedList = sortingDirection(usersList, sortVar, sortDirVar === 'ascending');
+    setUsersList(newSortedList);
+  };
+
   return (
     <div className="user-gallery">
       <div className="heading">
         <h1 className="title">Users</h1>
-        <Controls />
+        <Controls 
+          handleSort={handleSort} 
+          sortDir={sortDir} 
+          sort={sort}
+        />
       </div>
       <div className="items">
         {usersList.map((user, index) => (
