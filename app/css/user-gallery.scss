@@ -6,6 +6,10 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     grid-gap: 16px;
+
+    @media screen and (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   > .heading + .items {
