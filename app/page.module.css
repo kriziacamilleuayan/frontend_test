@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
+  padding: 2rem;
   min-height: 100vh;
 }
 
@@ -227,5 +227,17 @@
   }
   to {
     transform: rotate(0deg);
+  }
+}
+
+@media (min-width: 576px) { 
+  .main {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .main {
+    padding: 6rem;
   }
 }
