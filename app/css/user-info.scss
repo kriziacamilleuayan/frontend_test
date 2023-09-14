@@ -9,6 +9,10 @@
     font-weight: 600;
   }
 
+  .capitalize {
+    text-transform: capitalize;
+  }
+
   > .field {
     display: flex;
   }

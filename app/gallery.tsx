@@ -11,17 +11,18 @@ import {
 
 import Modal from "./modal";
 
-import { User } from "./types/user";
+import { Pokemon, Stats, User } from "./types/user";
+import Image from "next/image";
 
 export type GalleryProps = {
-  users: User[];
+  users: User[] | Pokemon[];
 };
 const Gallery = ({ users }: GalleryProps) => {
   const [usersList, setUsersList] = useState(users);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | Pokemon | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleModalOpen = (id: number) => {
+  const handleModalOpen = (id: number | string) => {
     const user = usersList.find((item) => item.id === id) || null;
 
     if(user) {
@@ -46,16 +47,20 @@ const Gallery = ({ users }: GalleryProps) => {
             onClick={() => handleModalOpen(user.id)}
           >
             <div className="body">
-              <Avatar
+              {user.isPokemon ?  
+              <Image src={user.image} alt={user.name} width={96} height={96} />
+              : <Avatar
                 size={96}
                 name={user.name}
                 variant="marble"
                 colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
-              />
+              />}
             </div>
             <div className="info">
               <div className="name">{user.name}</div>
-              <div className="company">{user.company.name}</div>
+              <div className="company">
+                {user.isPokemon ? user.types.join(', ') : user.company.name}
+              </div>
             </div>
           </div>
         ))}
@@ -75,40 +80,67 @@ const Gallery = ({ users }: GalleryProps) => {
               {selectedUser && (
                 <div className="user-info info">
                   <div className="avatar">
-                    <Avatar
-                      size={240}
-                      name={selectedUser.name}
-                      variant="marble"
-                      colors={[
-                        "#92A1C6",
-                        "#146A7C",
-                        "#F0AB3D",
-                        "#C271B4",
-                        "#C20D90",
-                      ]}
-                    />
+                    {selectedUser.isPokemon ?
+                      <Image src={selectedUser.image} alt={selectedUser.name} width={240} height={240} />
+                      : <Avatar
+                          size={240}
+                          name={selectedUser.name}
+                          variant="marble"
+                          colors={[
+                            "#92A1C6",
+                            "#146A7C",
+                            "#F0AB3D",
+                            "#C271B4",
+                            "#C20D90",
+                          ]}
+                        />
+                    }
                   </div>
-                  <div className="name">
-                    {selectedUser.name} ({selectedUser.username})
-                  </div>
-                  <div className="field">
-                    <FaLocationDot className="icon" />
-                    <div className="data">{`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}`}</div>
-                  </div>
-                  <div className="field">
-                    <FaPhone className="icon" />
-                    <div className="value">{selectedUser.phone}</div>
-                  </div>
-                  <div className="fields">
-                    <FaEnvelope className="icon" />
-                    <div className="value">{selectedUser.email}</div>
-                  </div>
-                  <div className="company">
-                    <div className="name">{selectedUser.company.name}</div>
-                    <div className="catchphrase">
-                      {selectedUser.company.catchPhrase}
-                    </div>
-                  </div>
+                  {selectedUser.isPokemon ? 
+                      <>
+                        <div className="name capitalize">{selectedUser.name}</div>
+                        <div className="field">
+                          <div className="data"><b>Type:</b> {selectedUser.types.join(', ')}</div>
+                        </div>
+                        <div className="field">
+                          <div className="data"><b>Weight:</b> {selectedUser.weight / 10} kg</div>
+                        </div>
+                        <div className="field">
+                          <div className="data"><b>Height:</b> {selectedUser.height / 10} m</div>
+                        </div>
+                        <div className="field">
+                          <div className="data"><b>Base Experience :</b> {selectedUser.baseExperience}</div>
+                        </div>
+                        {selectedUser.stats
+                          .map((stat: Stats) => <div key={stat.name} className="field">
+                            <div className="data"><b className="capitalize">{stat.name.replace(/-/g, " ")}:</b> {stat.value}</div>
+                          </div>)
+                        }
+                      </>
+                    : <>
+                        <div className="name">
+                          {selectedUser.name} ({selectedUser.username})
+                        </div>
+                        <div className="field">
+                          <FaLocationDot className="icon" />
+                          <div className="data">{`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}`}</div>
+                        </div>
+                        <div className="field">
+                          <FaPhone className="icon" />
+                          <div className="value">{selectedUser.phone}</div>
+                        </div>
+                        <div className="fields">
+                          <FaEnvelope className="icon" />
+                          <div className="value">{selectedUser.email}</div>
+                        </div>
+                        <div className="company">
+                          <div className="name">{selectedUser.company.name}</div>
+                          <div className="catchphrase">
+                            {selectedUser.company.catchPhrase}
+                          </div>
+                        </div>
+                      </>
+                    }
                 </div>
               )}
             </div>
