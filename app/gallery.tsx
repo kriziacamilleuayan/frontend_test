@@ -98,7 +98,7 @@ const Gallery = ({ users }: GalleryProps) => {
                   </div>
                   {selectedUser.isPokemon ? 
                       <>
-                        <div className="name">{selectedUser.name}</div>
+                        <div className="name capitalize">{selectedUser.name}</div>
                         <div className="field">
                           <div className="data"><b>Type:</b> {selectedUser.types.join(', ')}</div>
                         </div>
@@ -109,10 +109,12 @@ const Gallery = ({ users }: GalleryProps) => {
                           <div className="data"><b>Height:</b> {selectedUser.height / 10} m</div>
                         </div>
                         <div className="field">
-                          <div className="data"><b>Base Exp:</b> {selectedUser.baseExperience}</div>
+                          <div className="data"><b>Base Experience :</b> {selectedUser.baseExperience}</div>
                         </div>
                         {selectedUser.stats
-                          .map((stat: Stats) => <div key={stat.name}><b>{stat.name}:</b> {stat.value}</div>)
+                          .map((stat: Stats) => <div key={stat.name} className="field">
+                            <div className="data"><b className="capitalize">{stat.name.replace(/-/g, " ")}:</b> {stat.value}</div>
+                          </div>)
                         }
                       </>
                     : <>
