@@ -9,6 +9,23 @@ export type User = {
   company: Company;
 };
 
+export type Pokemon = {
+  id: string;
+  isPokemon: boolean;
+  name: string;
+  height: number;
+  weight: number;
+  baseExperience: number;
+  image: string;
+  stats : Stats[];
+  types: string[];
+};
+
+export type Stats = {
+  name: string;
+  value: number;
+};
+
 export type Address = {
   street: string;
   suite: string;
